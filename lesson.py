@@ -10,18 +10,15 @@ CREATE TABLE IF NOT EXISTS tasks (
 """)
 connection.commit()
 
-cursor.execute("""
-INSERT INTO tasks (title)
-VALUES ("Купить хлеб")                             
-""")
-connection.commit()
-
-
 task = [] 
 
 def add_task():
     x = input("название: ")
-    task.append(x)
+    cursor.execute("""
+    INSERT INTO tasks (title)
+    VALUES (?)
+    """, (x,) )
+    connection.commit()
 
 def show_task():
     if not task:
