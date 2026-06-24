@@ -10,8 +10,6 @@ CREATE TABLE IF NOT EXISTS tasks (
 """)
 connection.commit()
 
-task = [] 
-
 def add_task():
     x = input("название: ")
     cursor.execute("""
@@ -21,15 +19,26 @@ def add_task():
     connection.commit()
 
 def show_task():
-    if not task:
+    cursor.execute("SELECT id, title FROM tasks")
+    rows = cursor.fetchall()
+    if not rows:
         print("список пуст")
-    else:    
-        for index, i in enumerate(task):
-            print(f"{index+1}) {i}")
+    else:
+        for i in rows:
+            print(f"{i[0]}) {i[1]}")
+
+def update_tusks():
+    number = int(input("введите номер записи который хотите обновить: "))
+    str = input("введите обновленную задачу: ")
+    cursor.execute("UPDATE tasks SET title = ? WHERE id = ?", (str, number))
+    connection.commit()
+
+
 
 def delate_task():
-    number = int(input("Введите номер задачи"))
-    task.pop(number-1)  
+    number = int(input("Введите номер задачи: "))
+    cursor.execute("DELETE FROM tasks WHERE id = ?", (number,))
+    connection.commit()
 
 while 0 == 0:
     command = input("введите команду: ").strip().lower()
@@ -39,5 +48,7 @@ while 0 == 0:
         add_task()
     elif command == "удалить задачу":
         delate_task()
+    elif command == "обновить запись":
+        update_tusks()
         
 
